@@ -1,17 +1,31 @@
 <!DOCTYPE html>
 <html>
  <head>
-   <link rel = "stylesheet" href="styles.css">
+   <!-- <link rel = "stylesheet" href="styles.css"> -->
    <script src = "https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
    <script src = "https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
    <script src = "https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.js"></script>
- </head>
+ <style>
+ body {
+   font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif
+ }
+
+ li {
+   padding: 1rem;
+ }
+
+ </style>
+
+  </head>
  <body>
    <div id='root'></div>
    <script>
-     console.log(faker.helpers.createCard());
+     //console.log(faker.helpers.createCard());
+     const { render } = ReactDOM;
+     const { createElement, Component } = React;
      const root = document.querySelector('#root');
-     class App extends React.Component {
+
+     class App extends Component { // done
        constructor() {
          super();
          const users = [];
@@ -21,27 +35,36 @@
          this.state = {
            users
          };
-       }
+
+        }
        render() {
          const { users } =  this.state;
          console.log(users);
-         const isFavorite = (ev) => {
-           const idx = [...ev.target.parentNode.children].indexOf(ev.target);
-           users.splice(idx, 1);
-           this.setState( {users} )
+
+         const toggle = (user)=> {
+           user.isFavorite = !user.isFavorite;
+           const users = this.state.users.filter(userFaker =>
+           userFaker[idx] !== user[idx]);//i'm not sure about this part
+
+           this.setState({ users });
          };
-         const lis = users.map( (user, idx) => {
-           return
-           React.createElement(
+
+         const h1 = createElement('h1', {id: 'title'}, 'Acme Faker Favorites');
+
+         const lis = users.map( (user, idx) =>  user => createElement(
            'li',
-           {key: idx, onClick: isFavorite},
-           user.name
-         )})
-         const app = React.createElement('ul', null, lis);
-         return app;
+           {
+              key: idx,
+              className: user.isFavorite ? 'isFavorite': '',
+              onClick: ()=> toggle(user)
+           },
+           user.name)
+         );
+         const ul = createElement('ul', null, lis);
+         return createElement('div', null, h1, ul);
        }
      }
-   ReactDOM.render(React.createElement(App), root);
+   render(React.createElement(App), root);
    </script>
  </body>
 </html>
